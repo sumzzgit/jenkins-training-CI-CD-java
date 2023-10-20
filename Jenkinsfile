@@ -29,7 +29,7 @@ pipeline {
             steps{
                 sh 'sudo rm -f /home/ec2-user/test/*.war'
                 sh 'sudo mv /var/lib/jenkins/workspace/usecase_test/target/*.war /home/ec2-user/test/'
-                sh 'sudo docker rmi tomcat:custom'
+                sh 'sudo docker rmi -f tomcat:custom'
             }
         }
         stage('deploy'){
