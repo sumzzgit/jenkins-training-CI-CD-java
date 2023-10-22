@@ -27,7 +27,7 @@ pipeline {
         }
         stage('pre-deploy'){
             steps{
-                sh 'sudo rm -f /home/ec2-user/test/*.war'
+                sh 'sudo rm -f /home/sumzz/test/*.war'
                 sh 'sudo sleep 10'
                 sh 'sudo mv /var/lib/jenkins/workspace/dev-test/target/*.war /home/ec2-user/test/'
                 sh 'sudo sleep 10'
@@ -36,10 +36,10 @@ pipeline {
         }
         stage('deploy'){
             steps{
-                sh 'sudo docker build -t tomcat:custom -f /home/ec2-user/test/Dockerfile .'
+                sh 'sudo docker build -t tomcat:custom -f /home/sumzz/test/Dockerfile .'
                 sh 'sudo sleep 10'
                 sh 'sudo docker run -d -p 8085:8080 --name tomcat tomcat:custom'
-                sh 'sudo docker cp /home/ec2-user/test/*.war tomcat:/usr/local/tomcat/webapps/'
+                sh 'sudo docker cp /home/sumzz/test/*.war tomcat:/usr/local/tomcat/webapps/'
             }
         }
     }
