@@ -29,7 +29,7 @@ pipeline {
             steps{
                 sh 'sudo rm -f /home/ec2-user/test/*.war'
                 sh 'sudo sleep 10'
-                sh 'sudo mv /var/lib/jenkins/workspace/usecase_test/target/*.war /home/ec2-user/test/'
+                sh 'sudo mv /var/lib/jenkins/workspace/dev-test/target/*.war /home/ec2-user/test/'
                 sh 'sudo sleep 10'
                 //sh 'sudo docker rmi -f tomcat:custom'
             }
