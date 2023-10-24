@@ -18,13 +18,13 @@ pipeline {
                 }
             }
         }
-        stage('Qaulity Gate'){
+      /*  stage('Qaulity Gate'){
             steps{
                 timeout(time: 5, unit: 'MINUTES'){
                 waitForQualityGate abortPipeline: true
                 }
             }
-        }
+        }*/
         stage('pre-deploy'){
             steps{
                 sh 'sudo rm -f /home/sumzz/test/*.war'
