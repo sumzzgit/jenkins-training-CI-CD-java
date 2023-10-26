@@ -11,7 +11,7 @@
 	<url>http://mithuntechnologies.com</url>
 	
 	<description>Maven Web Project</description>
-
+	<!--demo on github trigger-->
 	<organization>
 		<name>Mithun Technologies</name>
 		<url>http://mithuntechnologies.com/</url>
