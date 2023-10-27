@@ -3,6 +3,16 @@ pipeline {
     tools{
         maven 'maven'
     }
+    environment {
+   NEXUS_VERSION = "nexus3"
+   NEXUS_PROTOCOL = "http"
+   NEXUS_URL = "13.126.154.123:8081"
+   NEXUS_REPOSITORY = "project-1-maven-repo"
+   NEXUS_CREDENTIAL_ID = "nexus-cred"
+}
+    options{
+        copyArtifactPermission('nexus-fetch');
+    }
     stages {
         stage('git checkout') {
             steps {
@@ -18,29 +28,66 @@ pipeline {
                 }
             }
         }
-      /*  stage('Qaulity Gate'){
+        stage('Qaulity Gate'){
             steps{
                 timeout(time: 5, unit: 'MINUTES'){
                 waitForQualityGate abortPipeline: true
                 }
             }
+        }
+        stage("Publish to Nexus Repository Manager"){
+            steps{
+                script{
+                     pom = readMavenPom file: "pom.xml";
+                     filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
+                     echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
+                     artifactPath = filesByGlob[0].path;
+                     artifactExists = fileExists artifactPath;
+                     if(artifactExists){
+                         echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
+                         nexusArtifactUploader(
+                              nexusVersion: NEXUS_VERSION,
+                              protocol: NEXUS_PROTOCOL,
+                              nexusUrl: NEXUS_URL,
+                              groupId: pom.groupId,
+                              version: pom.version,
+                              repository: NEXUS_REPOSITORY,
+                              credentialsId: NEXUS_CREDENTIAL_ID,
+                              artifacts:[
+                                  [
+                                      artifactId: pom.artifactId,
+                                      classifier: '',
+                                      file: artifactPath,
+                                      type: pom.packaging
+                                      ],
+                                      [
+                                          artifactId: pom.artifactId,
+                                          classifier: '',
+                                          file: "pom.xml",
+                                          type: "pom"
+                                          ]
+                                  ]
+                             );
+                     }else{
+                         error "*** File: ${artifactPath}, could not be found";
+                     }
+                      
+                }
+            }
+        } 
+        /*stage("archive artifact"){
+            steps{
+                script{
+                    pomFile = readMavenPom file: "pom.xml";
+                    archiveArtifacts artifacts: 'pom.xml'
+                    build job: 'nexus-fetch' , parameters: [
+                        string(name: 'artifactId', value: "${pomFile.artifactId}"),
+                        string(name: 'version', value: "${pomFile.version}"),
+                        string(name: 'build_number', value: "${currentBuild.number}"),
+                        string(name: 'job_name', value: "${JOB_NAME}")
+                        ]
+                }
+            }
         }*/
-        stage('pre-deploy'){
-            steps{
-                sh 'sudo rm -f /home/sumzz/test/*.war'
-                sh 'sudo sleep 10'
-                sh 'sudo mv /var/lib/jenkins/workspace/dev-test/target/*.war /home/sumzz/test/'
-                sh 'sudo sleep 10'
-                //sh 'sudo docker rmi -f tomcat:custom'
-            }
-        }
-        stage('deploy'){
-            steps{
-                sh 'sudo docker build -t tomcat:custom -f /home/sumzz/test/Dockerfile .'
-                sh 'sudo sleep 10'
-                sh 'sudo docker run -d -p 8085:8080 --name tomcat tomcat:custom'
-                sh 'sudo docker cp /home/sumzz/test/*.war tomcat:/usr/local/tomcat/webapps/'
-            }
-        }
     }
 }
