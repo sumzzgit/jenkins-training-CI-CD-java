@@ -125,7 +125,8 @@
 			</plugin>
 		</plugins>
 	</build>
-#this is the configuration for the artifact to push to the aws code artifact 
+	
+ <!-- Configuration for the artifact to push to the AWS CodeArtifact -->
 	
 <distributionManagement>
   <repository>
