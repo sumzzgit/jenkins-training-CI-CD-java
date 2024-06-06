@@ -125,6 +125,14 @@
 			</plugin>
 		</plugins>
 	</build>
-
+#this is the configuration for the artifact to push to the aws code artifact 
+	
+<distributionManagement>
+  <repository>
+    <id>test-sumzz-test</id>
+    <name>test-sumzz-test</name>
+    <url>https://test-637423318618.d.codeartifact.ap-south-1.amazonaws.com/maven/sumzz-test/</url>
+  </repository>
+</distributionManagement>
 	
 </project>
