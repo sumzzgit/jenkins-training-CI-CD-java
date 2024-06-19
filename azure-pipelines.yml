@@ -10,6 +10,14 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+
+- task: SnykSecurityScan@1
+  inputs:
+    serviceConnectionEndpoint: 'snyk2'
+    testType: 'code'
+    failOnIssues: false
+    projectName: 'test'
+    organization: '513059dd-feb7-49b0-8a40-07d8a127138a'
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
